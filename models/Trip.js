@@ -47,13 +47,37 @@ const tripSchema = new mongoose.Schema({
   accommodation: {
     sharedImage: { type: String },
     sharedPrice: { type: Number, default: 0 },
+    sharedName: { type: String, default: "" }, // Added accommodation name
     privateImage: { type: String },
     privatePrice: { type: Number, default: 0 },
+    privateName: { type: String, default: "" }, // Added accommodation name
     campingImage: { type: String },
     campingPrice: { type: Number, default: 0 },
+    campingName: { type: String, default: "" }, // Added accommodation name
     glampingImage: { type: String },
     glampingPrice: { type: Number, default: 0 },
-    settleToVendor: { type: Boolean, default: false } // Added settleToVendor field
+    glampingName: { type: String, default: "" }, // Added accommodation name
+    settleToVendor: { type: Boolean, default: false }, // Added settleToVendor field
+    sharedDays: [{ // Added additional days for shared
+      day: { type: Number },
+      name: { type: String, default: "" },
+      price: { type: Number, default: 0 }
+    }],
+    privateDays: [{ // Added additional days for private
+      day: { type: Number },
+      name: { type: String, default: "" },
+      price: { type: Number, default: 0 }
+    }],
+    campingDays: [{ // Added additional days for camping
+      day: { type: Number },
+      name: { type: String, default: "" },
+      price: { type: Number, default: 0 }
+    }],
+    glampingDays: [{ // Added additional days for glamping
+      day: { type: Number },
+      name: { type: String, default: "" },
+      price: { type: Number, default: 0 }
+    }]
   },
   
   // Meal Plans
@@ -106,7 +130,7 @@ const tripSchema = new mongoose.Schema({
   earlyBookingLimit: { type: Number },
   earlyBookingDiscount: { type: Number, default: 0 },
   earlyBookingEndDate: { type: Date },
-  allowPreviousParticipation: { type: Boolean, default: false },
+  allowPreviousParticipation: { type: Boolean, default: false }, // Added previous participation
   bookingDeadline: { type: Date },
   bookingTimeline: {
     startDate: { type: Date },
