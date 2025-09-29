@@ -60,15 +60,13 @@ exports.createTrip = async (req, res) => {
     }
     
     // Handle accommodation images
-    if (req.files && req.files.sharedImage) {
-      if (!tripData.accommodation) tripData.accommodation = {};
-      tripData.accommodation.sharedImage = handleFileUpload(req.files.sharedImage[0], "accommodation");
-    }
-    
-    if (req.files && req.files.privateImage) {
-      if (!tripData.accommodation) tripData.accommodation = {};
-      tripData.accommodation.privateImage = handleFileUpload(req.files.privateImage[0], "accommodation");
-    }
+    const accommodationImages = ['sharedImage', 'privateImage', 'campingImage', 'glampingImage'];
+    accommodationImages.forEach(imgType => {
+      if (req.files && req.files[imgType]) {
+        if (!tripData.accommodation) tripData.accommodation = {};
+        tripData.accommodation[imgType] = handleFileUpload(req.files[imgType][0], "accommodation");
+      }
+    });
     
     // Create the trip
     const trip = new Trip({
@@ -168,29 +166,22 @@ exports.updateTrip = async (req, res) => {
     }
     
     // Handle accommodation images
-    if (req.files && req.files.sharedImage) {
-      if (!req.body.accommodation) req.body.accommodation = {};
-      // Delete old shared image if it exists
-      if (trip.accommodation && trip.accommodation.sharedImage) {
-        const oldImagePath = path.join(__dirname, "..", trip.accommodation.sharedImage);
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
+    const accommodationImages = ['sharedImage', 'privateImage', 'campingImage', 'glampingImage'];
+    accommodationImages.forEach(imgType => {
+      if (req.files && req.files[imgType]) {
+        if (!req.body.accommodation) req.body.accommodation = {};
+        
+        // Delete old image if it exists
+        if (trip.accommodation && trip.accommodation[imgType]) {
+          const oldImagePath = path.join(__dirname, "..", trip.accommodation[imgType]);
+          if (fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
+          }
         }
+        
+        req.body.accommodation[imgType] = handleFileUpload(req.files[imgType][0], "accommodation");
       }
-      req.body.accommodation.sharedImage = handleFileUpload(req.files.sharedImage[0], "accommodation");
-    }
-    
-    if (req.files && req.files.privateImage) {
-      if (!req.body.accommodation) req.body.accommodation = {};
-      // Delete old private image if it exists
-      if (trip.accommodation && trip.accommodation.privateImage) {
-        const oldImagePath = path.join(__dirname, "..", trip.accommodation.privateImage);
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-      }
-      req.body.accommodation.privateImage = handleFileUpload(req.files.privateImage[0], "accommodation");
-    }
+    });
     
     // Remove _id and __v from updateData to prevent duplicate key error
     const { _id, __v, ...dataToUpdate } = req.body;
@@ -233,6 +224,19 @@ exports.deleteTrip = async (req, res) => {
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
+    }
+
+    // Delete accommodation images
+    if (trip.accommodation) {
+      const accommodationImages = ['sharedImage', 'privateImage', 'campingImage', 'glampingImage'];
+      accommodationImages.forEach(imgType => {
+        if (trip.accommodation[imgType]) {
+          const imagePath = path.join(__dirname, "..", trip.accommodation[imgType]);
+          if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+          }
+        }
+      });
     }
 
     await Trip.findByIdAndDelete(tripId);

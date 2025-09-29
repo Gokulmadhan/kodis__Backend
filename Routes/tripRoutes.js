@@ -28,7 +28,9 @@ router.use(protect);
 router.post("/", upload.fields([
   { name: "bannerImage", maxCount: 1 },
   { name: "sharedImage", maxCount: 1 },
-  { name: "privateImage", maxCount: 1 }
+  { name: "privateImage", maxCount: 1 },
+  { name: "campingImage", maxCount: 1 },
+  { name: "glampingImage", maxCount: 1 }
 ]), createTrip);
 
 router.get("/", getTrips);
@@ -38,7 +40,9 @@ router.get("/:id", getTripById);
 router.put("/:id", upload.fields([
   { name: "bannerImage", maxCount: 1 },
   { name: "sharedImage", maxCount: 1 },
-  { name: "privateImage", maxCount: 1 }
+  { name: "privateImage", maxCount: 1 },
+  { name: "campingImage", maxCount: 1 },
+  { name: "glampingImage", maxCount: 1 }
 ]), updateTrip);
 router.delete("/:id", deleteTrip);
 router.patch("/:id/publish", publishTrip);

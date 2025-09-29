@@ -4,7 +4,7 @@ const tripSchema = new mongoose.Schema({
   // Basic Details
   tripTitle: { type: String, required: true },
   bannerImage: { type: String },
-  tripCategory: { type: String, required: true }, // Already correctly defined
+  tripCategory: { type: String, required: true },
   groupType: { type: String, enum: ["public", "private"], required: true },
   privateSharingOption: { type: String, enum: ["individual", "group"] },
   isPublic: { type: Boolean, default: false },
@@ -24,6 +24,7 @@ const tripSchema = new mongoose.Schema({
     date: { type: Date, required: true },
     title: { type: String },
     overview: { type: String },
+    travelMode: { type: String, default: "" }, // Added travel mode field
     stops: [{
       name: { type: String },
       time: { type: String },
@@ -47,8 +48,12 @@ const tripSchema = new mongoose.Schema({
     sharedImage: { type: String },
     sharedPrice: { type: Number, default: 0 },
     privateImage: { type: String },
-    privatePrice: { type: Number, default: 0 }
-    // Removed settleToVendor field
+    privatePrice: { type: Number, default: 0 },
+    campingImage: { type: String },
+    campingPrice: { type: Number, default: 0 },
+    glampingImage: { type: String },
+    glampingPrice: { type: Number, default: 0 },
+    settleToVendor: { type: Boolean, default: false } // Added settleToVendor field
   },
   
   // Meal Plans
@@ -101,7 +106,6 @@ const tripSchema = new mongoose.Schema({
   earlyBookingLimit: { type: Number },
   earlyBookingDiscount: { type: Number, default: 0 },
   earlyBookingEndDate: { type: Date },
-  // New field for allowing previous participation
   allowPreviousParticipation: { type: Boolean, default: false },
   bookingDeadline: { type: Date },
   bookingTimeline: {
